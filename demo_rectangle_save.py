@@ -34,7 +34,10 @@ NETS = {'vgg16': ('VGG16',
         'zf': ('ZF',
                   'Alibaba_ZF_faster_rcnn_final_3.caffemodel')}
 
-                  
+ 
+fp_change = open("change_rect.txt","w+")
+
+ 
 def save_rect_info(fp,dets,img_name,thresh=0.5):
     """Draw detected bounding boxes."""
     inds = np.where(dets[:, -1] >= thresh)[0]
@@ -51,7 +54,7 @@ def save_rect_info(fp,dets,img_name,thresh=0.5):
         w = bbox[2] - bbox[0]
         h = bbox[3] - bbox[1]
         s = score
-        result = "%s %d %d %d %d %.2f" % (img_name,x,y,w,h,s)
+        result = "%s %d %d %d %d %.2f\n" % (img_name,x,y,w,h,s)
         fp.write(result);
                       
 
@@ -88,7 +91,7 @@ def dist(target,probs):
         imo[ymin:ymin+h,xmin:xmin+w]=1
     
     return np.sum(im*imo)/np.sum(im)
-def vis_detections(im, class_name,dets,dets_other,thresh=0.0):
+def vis_detections(im, class_name,dets,dets_other,image_name,thresh=0.0):
     """Draw detected bounding boxes."""
     inds = np.where(dets[:, -1] >= thresh)[0]
     inds_other = dets_other[:, -1] >= thresh
@@ -109,6 +112,11 @@ def vis_detections(im, class_name,dets,dets_other,thresh=0.0):
         w=xmax-xmin
         h=ymax-ymin
         im[ymin:ymin+h,xmin:xmin+w]=1
+        
+        x=xmin
+        y=ymin
+        result = "%s %d %d %d %d\n" % (image_name,x,y,w,h)
+        fp_change.write(result)
         
 
 def demo(net, image_name):
@@ -147,10 +155,11 @@ def demo(net, image_name):
         print ('Detection took {:.3f}s for '
             '{:d} object proposals').format(timer.total_time, dets.shape[0])
 
-        vis_detections(res,cls, dets,dets_other, thresh=CONF_THRESH)
+        vis_detections(res,cls, dets,dets_other, image_name,thresh=CONF_THRESH)
     misc.imsave('output/stride32_change_new/'+image_name,res)
     f2015.close()
     f2017.close()
+    fp_change.close()
 
 def parse_args():
     """Parse input arguments."""
