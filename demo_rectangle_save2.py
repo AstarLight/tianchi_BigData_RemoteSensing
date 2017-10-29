@@ -32,7 +32,7 @@ CLASSES = ('__background__',
 NETS = {'vgg16': ('VGG16',
                   'VGG16_faster_rcnn_final.caffemodel'),
         'zf': ('ZF',
-                  'Alibaba_ZF_faster_rcnn_final_3.caffemodel')}
+                  'Alibaba_ZF_faster_rcnn_final_4.caffemodel')}
 
  
 fp_change = open("change_rect.txt","w+")
@@ -159,7 +159,6 @@ def demo(net, image_name):
     misc.imsave('output/stride32_change_new/'+image_name,res)
     f2015.close()
     f2017.close()
-    fp_change.close()
 
 def parse_args():
     """Parse input arguments."""
@@ -213,4 +212,5 @@ if __name__ == '__main__':
         print 'Demo for data/demo/{}'.format(im_name)
         demo(net, im_name)
 
+    fp_change.close()
     plt.show()
